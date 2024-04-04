@@ -3,7 +3,6 @@ import { onMounted, ref, watchEffect } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import ArticleList from '../components/ArticleList.vue';
 import PictureList from '../components/PictureList.vue';
-import UserList from '../components/UserList.vue';
 import CusDivider from '../components/CusDivider.vue';
 import http from '../plugins/http';
 
@@ -13,17 +12,34 @@ const activeKey = route.params.category;
 
 
 const articleList = ref([]);
+const pictureList = ref([]);
 
-onMounted(async () => {
-    const data = await http.get("/article/query/page", {
-        params: {
-            pageSize: 5
-        }
+const loadData = async (params: any) => {
+    const query = {
+        ...params,
+        searchText: params.text
+    }
+
+    // const articleData = await http.get("/article/query/page", {
+    //     params: query
+    // }) as any;
+    // articleList.value = articleData.records;
+
+    // const pictureData = await http.get("/picture/query/page", {
+    //     params: query
+    // }) as any;
+    // pictureList.value = pictureData.records;
+
+    const data = await http.get("/search/all", {
+        params: query
     }) as any;
 
-    console.log(data);
+    pictureList.value = data.pictureVOList;
+    articleList.value = data.articleVOList;
+}
 
-    articleList.value = data.records;
+onMounted(async () => {
+    await loadData(initSearchParams);
 })
 
 
@@ -34,6 +50,8 @@ const initSearchParams = {
 }
 
 const searchPrams = ref(initSearchParams);
+
+
 watchEffect(() => {
     searchPrams.value = {
         ...initSearchParams,
@@ -46,6 +64,7 @@ const onSearch = (_: string) => {
     router.push({
         query: searchPrams.value,
     })
+    loadData(searchPrams.value)
 };
 
 const onTabChange = (key: string) => {
@@ -53,6 +72,7 @@ const onTabChange = (key: string) => {
         path: `/${key}`,
         query: searchPrams.value
     })
+    loadData(searchPrams.value)
 }
 </script>
 
@@ -68,11 +88,12 @@ const onTabChange = (key: string) => {
                 <ArticleList :article-list="articleList" />
             </a-tab-pane>
             <a-tab-pane key="picture" tab="图片">
-                <PictureList />
+                <PictureList :picture-list="pictureList" />
             </a-tab-pane>
-            <a-tab-pane key="user" tab="用户">
+            <!-- TODO 扩展 -->
+            <!-- <a-tab-pane key="user" tab="用户">
                 <UserList />
-            </a-tab-pane>
+            </a-tab-pane> -->
         </a-tabs>
     </div>
 </template>
