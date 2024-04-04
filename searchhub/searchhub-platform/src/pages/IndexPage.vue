@@ -1,13 +1,30 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
-import PostList from '../components/PostList.vue';
+import { onMounted, ref, watchEffect } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import ArticleList from '../components/ArticleList.vue';
 import PictureList from '../components/PictureList.vue';
 import UserList from '../components/UserList.vue';
-import { useRouter, useRoute } from 'vue-router';
+import CusDivider from '../components/CusDivider.vue';
+import http from '../plugins/http';
 
 const router = useRouter()
 const route = useRoute()
-const activeKey = route.params.category || 'post';
+const activeKey = route.params.category;
+
+
+const articleList = ref([]);
+
+onMounted(async () => {
+    const data = await http.get("/article/query/page", {
+        params: {
+            pageSize: 5
+        }
+    }) as any;
+
+    console.log(data);
+
+    articleList.value = data.records;
+})
 
 
 const initSearchParams = {
@@ -41,12 +58,14 @@ const onTabChange = (key: string) => {
 
 <template>
     <div class="index-page">
-        <a-input-search :value="searchPrams.text" placeholder="input search text" enter-button="Search" size="large"
+        <a-input-search v-model:value="searchPrams.text" placeholder="input search text" enter-button="搜索" size="large"
             @search="onSearch" />
 
+        <CusDivider />
+
         <a-tabs :activeKey="activeKey" @change="onTabChange">
-            <a-tab-pane key="post" tab="文章">
-                <PostList />
+            <a-tab-pane key="article" tab="文章">
+                <ArticleList :article-list="articleList" />
             </a-tab-pane>
             <a-tab-pane key="picture" tab="图片">
                 <PictureList />
