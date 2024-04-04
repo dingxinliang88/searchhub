@@ -2,6 +2,7 @@ package com.youyi.searchhub.model.dto;
 
 import com.youyi.searchhub.common.PageRequest;
 import java.io.Serial;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +18,7 @@ public class ArticleQueryRequest extends PageRequest implements Serializable {
     /**
      * 搜索关键词（标题、内容）
      */
+    @NotNull
     private String searchText;
 
     @Serial

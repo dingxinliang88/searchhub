@@ -3,6 +3,7 @@ package com.youyi.searchhub.model.dto;
 import com.youyi.searchhub.common.PageRequest;
 import java.io.Serial;
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +16,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class PictureQueryRequest extends PageRequest implements Serializable {
 
+    @NotNull
     private String searchText;
 
     @Serial

@@ -12,6 +12,7 @@ import com.youyi.searchhub.util.ResultUtil;
 import com.youyi.searchhub.util.ThrowUtil;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,7 @@ public class ArticleController {
 
     @GetMapping("/query/page")
     public BaseResponse<Page<ArticleVO>> queryArticleByPage(
-            ArticleQueryRequest articleQueryRequest) {
+            @Validated ArticleQueryRequest articleQueryRequest) {
         // 防止爬虫
         ThrowUtil.throwIf(articleQueryRequest.getPageSize() > ONCE_MAX_PAGE_SIZE,
                 StatusCode.PARAMS_ERROR, "一次获取资源过多");
