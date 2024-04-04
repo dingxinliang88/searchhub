@@ -2,11 +2,10 @@ package com.youyi.searchhub.model.dto;
 
 import com.youyi.searchhub.common.PageRequest;
 import java.io.Serial;
+import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
