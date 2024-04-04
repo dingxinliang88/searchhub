@@ -2,11 +2,11 @@ create database searchhub;
 use searchhub;
 
 -- 文章表
-create table if not exists article
-(
-    id         bigint auto_increment comment 'id' primary key,
-    title      varchar(512)                       null comment '标题',
-    content    text                               null comment '内容',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除'
-) comment '文章' collate = utf8mb4_unicode_ci;
+CREATE TABLE `article` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `title` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '标题',
+  `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '内容',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `deleted` tinyint NOT NULL DEFAULT '0' COMMENT '是否删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章';

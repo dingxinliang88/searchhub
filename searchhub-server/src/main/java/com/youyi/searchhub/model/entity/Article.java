@@ -2,6 +2,7 @@ package com.youyi.searchhub.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 
+import com.youyi.searchhub.model.vo.ArticleVO;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +17,7 @@ import lombok.Data;
 @TableName(value = "article")
 @Data
 public class Article implements Serializable {
+
     /**
      * id
      */
@@ -41,9 +43,18 @@ public class Article implements Serializable {
      * 是否删除 0 - 未删除， 1 - 已删除
      */
     @TableLogic
-    private Integer isDelete;
+    private Integer deleted;
 
     @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    public ArticleVO toVO() {
+        ArticleVO articleVO = new ArticleVO();
+        articleVO.setId(id);
+        articleVO.setTitle(title);
+        articleVO.setContent(content);
+        articleVO.setCreateTime(createTime);
+        return articleVO;
+    }
 }

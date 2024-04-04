@@ -8,18 +8,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
+ * 图片查询请求
+ *
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
-@Data
 @EqualsAndHashCode(callSuper = true)
-public class ArticleQueryRequest extends PageRequest implements Serializable {
+@Data
+public class PictureQueryRequest extends PageRequest implements Serializable {
 
-    /**
-     * 搜索关键词（标题、内容）
-     */
     @NotNull
     private String searchText;
 
     @Serial
     private static final long serialVersionUID = 1L;
+
 }

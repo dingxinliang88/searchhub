@@ -9,8 +9,6 @@ import com.youyi.searchhub.model.vo.ArticleVO;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
- * @description 针对表【article(文章)】的数据库操作Service
- * @createDate 2023-06-02 19:27:00
  */
 public interface ArticleService extends IService<Article> {
 

@@ -3,20 +3,18 @@ package com.youyi.searchhub.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.youyi.searchhub.constant.CommonConstant;
 import com.youyi.searchhub.mapper.ArticleMapper;
 import com.youyi.searchhub.model.dto.ArticleQueryRequest;
 import com.youyi.searchhub.model.entity.Article;
 import com.youyi.searchhub.model.vo.ArticleVO;
 import com.youyi.searchhub.service.ArticleService;
 import com.youyi.searchhub.util.SqlUtil;
-import com.youyi.searchhub.constant.CommonConstant;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
@@ -56,11 +54,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Override
     public Page<ArticleVO> getArticleVOPage(Page<Article> articlePage) {
         List<Article> articleList = articlePage.getRecords();
-        List<ArticleVO> articleVOList = articleList.stream().map(article -> {
-            ArticleVO articleVO = new ArticleVO();
-            BeanUtils.copyProperties(article, articleVO);
-            return articleVO;
-        }).collect(Collectors.toList());
+        List<ArticleVO> articleVOList = articleList.stream().map(Article::toVO).collect(Collectors.toList());
 
         long current = articlePage.getCurrent();
         long size = articlePage.getSize();

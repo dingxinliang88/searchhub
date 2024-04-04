@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Article } from '../model/article';
-import { withDefaults, defineProps } from 'vue';
+import { withDefaults } from 'vue';
 
 
 interface Props {
