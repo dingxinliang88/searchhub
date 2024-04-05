@@ -9,6 +9,7 @@ import com.youyi.searchhub.exception.BusinessException;
 import com.youyi.searchhub.model.dto.ArticleQueryRequest;
 import com.youyi.searchhub.model.dto.PictureQueryRequest;
 import com.youyi.searchhub.model.dto.SearchRequest;
+import com.youyi.searchhub.model.enums.SearchType;
 import com.youyi.searchhub.model.vo.ArticleVO;
 import com.youyi.searchhub.model.vo.PictureVO;
 import com.youyi.searchhub.model.vo.SearchVO;
@@ -37,6 +38,60 @@ public class SearchController {
 
     @Resource
     private PictureService pictureService;
+
+    @GetMapping("/all")
+    public BaseResponse<SearchVO> search(@Validated SearchRequest searchRequest) {
+        // 防止爬虫
+        ThrowUtil.throwIf(searchRequest.getPageSize() > ONCE_MAX_PAGE_SIZE,
+                StatusCode.PARAMS_ERROR, "一次获取资源过多");
+
+        SearchType searchType = SearchType.resolve(searchRequest.getType());
+
+        SearchVO searchVO = new SearchVO();
+        if (SearchType.ALL.equals(searchType)) {
+            // 搜索全部
+            ArticleQueryRequest articleQueryRequest = new ArticleQueryRequest();
+            articleQueryRequest.setSearchText(searchRequest.getSearchText());
+            articleQueryRequest.setCurrent(searchRequest.getCurrent());
+            articleQueryRequest.setPageSize(searchRequest.getPageSize());
+            Page<ArticleVO> articleVOPage = articleService.queryArticleByPage(articleQueryRequest);
+
+            PictureQueryRequest pictureQueryRequest = new PictureQueryRequest();
+            pictureQueryRequest.setSearchText(searchRequest.getSearchText());
+            pictureQueryRequest.setCurrent(searchRequest.getCurrent());
+            pictureQueryRequest.setPageSize(searchRequest.getPageSize());
+            Page<PictureVO> pictureVOPage = pictureService.queryPictureByPage(pictureQueryRequest);
+
+            searchVO.setArticleVOList(articleVOPage.getRecords());
+            searchVO.setPictureVOList(pictureVOPage.getRecords());
+
+            return ResultUtil.success(searchVO);
+        } else {
+            switch (searchType) {
+                case ARTICLE -> {
+                    ArticleQueryRequest articleQueryRequest = new ArticleQueryRequest();
+                    articleQueryRequest.setSearchText(searchRequest.getSearchText());
+                    articleQueryRequest.setCurrent(searchRequest.getCurrent());
+                    articleQueryRequest.setPageSize(searchRequest.getPageSize());
+                    Page<ArticleVO> articleVOPage = articleService.queryArticleByPage(
+                            articleQueryRequest);
+                    searchVO.setArticleVOList(articleVOPage.getRecords());
+                }
+                case PICTURE -> {
+                    PictureQueryRequest pictureQueryRequest = new PictureQueryRequest();
+                    pictureQueryRequest.setSearchText(searchRequest.getSearchText());
+                    pictureQueryRequest.setCurrent(searchRequest.getCurrent());
+                    pictureQueryRequest.setPageSize(searchRequest.getPageSize());
+                    Page<PictureVO> pictureVOPage = pictureService.queryPictureByPage(
+                            pictureQueryRequest);
+                    searchVO.setPictureVOList(pictureVOPage.getRecords());
+                }
+                default -> throw new BusinessException(StatusCode.PARAMS_ERROR, "搜索类型错误");
+            }
+        }
+
+        return ResultUtil.success(searchVO);
+    }
 
 
     // MySQL => 836ms

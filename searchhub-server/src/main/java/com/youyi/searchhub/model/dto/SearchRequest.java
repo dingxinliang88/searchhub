@@ -20,6 +20,9 @@ public class SearchRequest extends PageRequest implements Serializable {
     @NotNull
     private String searchText;
 
+    @NotNull
+    private String type;
+
     @Serial
     private static final long serialVersionUID = 1L;
 }
