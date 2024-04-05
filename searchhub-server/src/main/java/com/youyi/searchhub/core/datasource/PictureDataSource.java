@@ -1,36 +1,30 @@
-package com.youyi.searchhub.service.impl;
+package com.youyi.searchhub.core.datasource;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.youyi.searchhub.model.dto.PictureQueryRequest;
 import com.youyi.searchhub.model.entity.Picture;
+import com.youyi.searchhub.model.enums.SearchType;
 import com.youyi.searchhub.model.vo.PictureVO;
-import com.youyi.searchhub.service.PictureService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
-@Slf4j
-@Service
-public class PictureServiceImpl implements PictureService {
+@Component
+public class PictureDataSource implements DataSource<PictureVO> {
 
     @Override
-    public Page<PictureVO> queryPictureByPage(PictureQueryRequest req) {
-        String searchText = req.getSearchText();
-        long current = req.getCurrent();
-        long pageSize = req.getPageSize();
-
+    public Page<PictureVO> doSearch(String searchText, long current, long pageSize) {
         String baseUrl = String.format("https://cn.bing.com/images/search?q=%s&first=%s",
                 searchText, current);
         Document doc;
@@ -53,18 +47,22 @@ public class PictureServiceImpl implements PictureService {
             Picture picture = new Picture();
             picture.setTitle(title);
             picture.setUrl(url);
-
             pictureVOList.add(picture.toVO());
 
             if (pictureVOList.size() >= pageSize) {
                 break;
             }
-
         }
 
         Page<PictureVO> pictureVOPage = new Page<>(current, pageSize, pageSize);
         pictureVOPage.setRecords(pictureVOList);
 
         return pictureVOPage;
+    }
+
+    @Override
+    @PostConstruct
+    public void register() {
+        DataSourceRegistry.registry(SearchType.PICTURE, this);
     }
 }
