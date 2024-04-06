@@ -1,10 +1,9 @@
 package com.youyi.searchhub.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.youyi.searchhub.model.dto.ArticleQueryRequest;
 import com.youyi.searchhub.model.entity.Article;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.youyi.searchhub.model.vo.ArticleVO;
 
 /**
@@ -21,18 +20,20 @@ public interface ArticleService extends IService<Article> {
     Page<ArticleVO> queryArticleByPage(ArticleQueryRequest articleQueryRequest);
 
     /**
-     * 组装查询条件
-     *
-     * @param articleQueryRequest 查询条件
-     * @return query wrapper
-     */
-    QueryWrapper<Article> getQueryWrapper(ArticleQueryRequest articleQueryRequest);
-
-    /**
      * 获取封装后的文章分页信息
      *
      * @param articlePage 原始的文章分页信息
      * @return article page
      */
-    Page<ArticleVO> getArticleVOPage(Page<Article> articlePage);
+    Page<ArticleVO> queryArticleByPage(Page<Article> articlePage);
+
+
+    /**
+     * 从Elasticsearch查询文章信息。
+     *
+     * @param articleQueryRequest 包含查询条件的请求对象，用于指定文章查询的细节，如关键词、分类等。
+     * @return 返回一个Page对象，其中包含了查询到的文章结果集，以及分页相关信息（如总记录数、当前页码等）。
+     */
+    Page<ArticleVO> queryArticleFromEs(ArticleQueryRequest articleQueryRequest);
 }
+

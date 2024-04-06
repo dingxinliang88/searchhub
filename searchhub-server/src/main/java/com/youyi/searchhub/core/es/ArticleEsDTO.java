@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -15,6 +16,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
+@FieldNameConstants
 @Document(indexName = "article")
 public class ArticleEsDTO implements Serializable {
 
@@ -42,7 +44,8 @@ public class ArticleEsDTO implements Serializable {
     /**
      * 创建时间
      */
-    @Field(index = false, store = true, type = FieldType.Date, format = {}, pattern = DATE_TIME_PATTERN)
+    @Field(name = "create_time", index = false, store = true, type = FieldType.Date, format = {},
+            pattern = DATE_TIME_PATTERN)
     private Date createTime;
 
     /**

@@ -6,6 +6,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.youyi.searchhub.constant.CrawlerConstant;
 import com.youyi.searchhub.model.entity.Article;
 import com.youyi.searchhub.service.ArticleService;
 import java.util.ArrayList;
@@ -32,19 +33,9 @@ public class FetchArticleJob {
     // 每天中午 12 点触发
     @Scheduled(cron = "0 0 12 * * ?")
     public void fetchArticle() {
-        String baseUrl = "https://www.code-nav.cn/api/post/search/page/vo";
+        String baseUrl = CrawlerConstant.CRAWLER_ARTICLE_URL;
         int current = INCR.incrementAndGet();
-        String body = """
-                {
-                    "current": %s,
-                    "pageSize": 5,
-                    "sortField": "createTime",
-                    "sortOrder": "descend",
-                    "category": "文章",
-                    "tags": [],
-                    "reviewStatus": 1
-                }
-                """.formatted(current);
+        String body = CrawlerConstant.CRAWLER_ARTICLE_REQ_PARAMS.formatted(current);
 
         String resp;
         try (HttpResponse response = HttpRequest.post(baseUrl)
@@ -77,6 +68,8 @@ public class FetchArticleJob {
 
         boolean saveRes = articleService.saveBatch(articleList);
         log.info("save article list in db, res: {}, size: {}", saveRes, articleList.size());
+
+        // TODO 同步方案三：代码层面同步给 ES
     }
 
 }

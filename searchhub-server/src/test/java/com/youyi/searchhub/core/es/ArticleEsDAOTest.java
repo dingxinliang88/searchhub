@@ -26,7 +26,7 @@ class ArticleEsDAOTest {
     void testAdd() {
         ArticleEsDTO articleEsDTO = new ArticleEsDTO();
         articleEsDTO.setId(1L);
-        articleEsDTO.setTitle("youyi test");
+        articleEsDTO.setTitle("test");
         articleEsDTO.setContent("youyi channel, 冲冲冲，一切顺利");
         articleEsDTO.setCreateTime(new Date());
         articleEsDTO.setDeleted(0);

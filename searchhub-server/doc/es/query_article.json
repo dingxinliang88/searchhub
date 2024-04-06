@@ -1,0 +1,57 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": ""
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "title": ""
+          }
+        },
+        {
+          "match": {
+            "content": ""
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "deleted": 0
+          }
+        },
+        {
+          "term": {
+            "id": 1
+          }
+        }
+      ],
+      "minimum_should_match": 0
+    }
+  },
+  "from": 0,
+  "size": 5,
+  "_source": [
+    "title",
+    "content",
+    "createTime"
+  ],
+  "sort": [
+    {
+      "_score": {
+        "order": "desc"
+      }
+    },
+    {
+      "createTime": {
+        "order": "desc"
+      }
+    }
+  ]
+}
