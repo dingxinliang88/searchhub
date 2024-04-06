@@ -21,11 +21,12 @@ const loadData = async (params: SearchParam) => {
   const data = (await http.get("/search/all", {
     params,
   })) as any;
+  console.log("@@@", data);
   const type = params.type;
   if (type === "picture") {
-    pictureList.value = data.pictureVOList;
+    pictureList.value = data.dataList;
   } else if (type === "article") {
-    articleList.value = data.articleVOList;
+    articleList.value = data.dataList;
   } else {
     pictureList.value = data.pictureVOList;
     articleList.value = data.articleVOList;

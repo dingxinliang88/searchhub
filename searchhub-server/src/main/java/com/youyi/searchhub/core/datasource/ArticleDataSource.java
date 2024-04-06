@@ -24,7 +24,7 @@ public class ArticleDataSource implements DataSource<ArticleVO> {
         articleQueryRequest.setSearchText(searchText);
         articleQueryRequest.setCurrent(current);
         articleQueryRequest.setPageSize(pageSize);
-        return articleService.queryArticleByPage(articleQueryRequest);
+        return articleService.queryArticleFromEs(articleQueryRequest);
     }
 
     @Override
