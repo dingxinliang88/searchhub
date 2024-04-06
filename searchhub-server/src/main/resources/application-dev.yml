@@ -7,6 +7,9 @@ spring:
     username: root                                          # 数据库用户名
     password: 12345678                                      # 数据库密码
     driver-class-name: com.mysql.cj.jdbc.Driver             # 数据库驱动类名
+  elasticsearch:
+    uris:
+      - http://localhost:9200
 
 
 mybatis-plus:
