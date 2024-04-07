@@ -69,7 +69,9 @@ public class FetchArticleJob {
         boolean saveRes = articleService.saveBatch(articleList);
         log.info("save article list in db, res: {}, size: {}", saveRes, articleList.size());
 
-        // TODO 同步方案三：代码层面同步给 ES
+        // [PASS]同步方案三：代码层面同步给 ES
+        // 一方面对代码侵入性大，一方面有一致性问题
+        // 目前采用方案是：使用 canal 做同步
     }
 
 }
