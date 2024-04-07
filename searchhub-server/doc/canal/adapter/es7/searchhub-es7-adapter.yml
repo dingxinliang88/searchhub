@@ -1,0 +1,15 @@
+dataSourceKey: defaultDS
+destination: example # canal instance name, if no zk, just use example
+groupId: g1
+esMapping:
+  _index: article_v1
+  _id: _id
+  _type: _doc
+  #  upsert: true
+  # pk: id
+  # _id for es, id for project
+  sql: "SELECT t.id AS _id, t.id AS id, t.title AS title, t.content AS content, t.create_time AS create_time, t.deleted AS deleted FROM article t"
+  #  objFields:
+  #    _labels: array:;
+  etlCondition: "where t.create_time>={0}"
+  commitBatch: 3000
