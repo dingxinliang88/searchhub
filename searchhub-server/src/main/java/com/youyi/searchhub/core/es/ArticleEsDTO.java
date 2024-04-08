@@ -23,7 +23,7 @@ public class ArticleEsDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     /**
      * id
