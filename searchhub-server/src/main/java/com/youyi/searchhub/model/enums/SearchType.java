@@ -12,6 +12,7 @@ public enum SearchType {
 
     ARTICLE("article", "文章"),
     PICTURE("picture", "图片"),
+    BILI_VIDEO("bili_video", "B站视频"),
     ALL("all", "全部"),
     ;
 
