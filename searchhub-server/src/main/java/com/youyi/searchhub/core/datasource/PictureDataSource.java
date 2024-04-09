@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -60,9 +59,9 @@ public class PictureDataSource implements DataSource<PictureVO> {
         return pictureVOPage;
     }
 
+
     @Override
-    @PostConstruct
-    public void register() {
-        DataSourceRegistry.registry(SearchType.PICTURE, this);
+    public String getType() {
+        return SearchType.PICTURE.getType();
     }
 }

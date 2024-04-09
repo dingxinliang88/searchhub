@@ -19,9 +19,6 @@ public interface DataSource<T> {
      */
     Page<T> doSearch(String searchText, long current, long pageSize);
 
-    /**
-     * 注册自己
-     */
-    void register();
+    String getType();
 
 }

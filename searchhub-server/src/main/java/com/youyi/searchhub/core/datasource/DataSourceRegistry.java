@@ -9,9 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * 数据源注册器
  *
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
+ * @see DataSourceFactory
+ * @deprecated
  */
+// @Component
+@Deprecated
 public class DataSourceRegistry {
-
 
     private static final Map<Enum<SearchType>, DataSource<?>> DATA_SOURCE_REGISTRY = new ConcurrentHashMap<>(
             16);

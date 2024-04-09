@@ -5,7 +5,6 @@ import com.youyi.searchhub.model.dto.ArticleQueryRequest;
 import com.youyi.searchhub.model.enums.SearchType;
 import com.youyi.searchhub.model.vo.ArticleVO;
 import com.youyi.searchhub.service.ArticleService;
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +27,7 @@ public class ArticleDataSource implements DataSource<ArticleVO> {
     }
 
     @Override
-    @PostConstruct
-    public void register() {
-        DataSourceRegistry.registry(SearchType.ARTICLE, this);
+    public String getType() {
+        return SearchType.ARTICLE.getType();
     }
 }
