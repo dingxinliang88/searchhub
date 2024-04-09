@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 /**
@@ -66,12 +65,10 @@ public class BiliVideoDataSource implements DataSource<BiliVideoVO> {
         return biliVideoVOPage;
     }
 
-    @PostConstruct
     @Override
-    public void register() {
-        DataSourceRegistry.registry(SearchType.BILI_VIDEO, this);
+    public String getType() {
+        return SearchType.BILI_VIDEO.getType();
     }
-
 
     private HttpCookie getBiliCookie() {
         HttpCookie cookie;

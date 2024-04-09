@@ -19,6 +19,8 @@ public class SearchVO implements Serializable {
 
     private List<ArticleVO> articleVOList;
 
+    private List<BiliVideoVO> biliVideoVOList;
+
     private List<?> dataList;
 
 }
