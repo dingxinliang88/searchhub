@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @deprecated
  */
 // @Component
-@Deprecated
+@Deprecated(forRemoval = true)
 public class DataSourceRegistry {
 
     private static final Map<Enum<SearchType>, DataSource<?>> DATA_SOURCE_REGISTRY = new ConcurrentHashMap<>(

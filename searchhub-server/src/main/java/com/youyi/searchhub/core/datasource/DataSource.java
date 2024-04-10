@@ -16,9 +16,16 @@ public interface DataSource<T> {
      * @param current    当前页码，用于分页查询。
      * @param pageSize   每页显示的记录数，用于分页查询。
      * @return Page<T> 返回搜索结果的分页信息，包含当前页的记录列表。
+     * TODO 添加重试机制
      */
     Page<T> doSearch(String searchText, long current, long pageSize);
 
+    /**
+     * 获取数据源类型
+     *
+     * @return 数据源类型
+     * @see com.youyi.searchhub.model.enums.SearchType
+     */
     String getType();
 
 }
