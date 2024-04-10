@@ -13,6 +13,8 @@ public enum SearchType {
     ARTICLE("article", "文章"),
     PICTURE("picture", "图片"),
     BILI_VIDEO("bili_video", "B站视频"),
+    NEWS("news", "新闻"),
+    GITHUB_HOT_REPO("github_hot_repo", "Github热门项目"), // TODO
     ALL("all", "全部"),
     ;
 

@@ -5,11 +5,13 @@ import com.youyi.searchhub.core.datasource.ArticleDataSource;
 import com.youyi.searchhub.core.datasource.BiliVideoDataSource;
 import com.youyi.searchhub.core.datasource.DataSource;
 import com.youyi.searchhub.core.datasource.DataSourceFactory;
+import com.youyi.searchhub.core.datasource.NewsDataSource;
 import com.youyi.searchhub.core.datasource.PictureDataSource;
 import com.youyi.searchhub.model.dto.SearchRequest;
 import com.youyi.searchhub.model.enums.SearchType;
 import com.youyi.searchhub.model.vo.ArticleVO;
 import com.youyi.searchhub.model.vo.BiliVideoVO;
+import com.youyi.searchhub.model.vo.NewsVO;
 import com.youyi.searchhub.model.vo.PictureVO;
 import com.youyi.searchhub.model.vo.SearchVO;
 import javax.annotation.Resource;
@@ -35,6 +37,9 @@ public class SearchFacade {
     private BiliVideoDataSource biliVideoDataSource;
 
     @Resource
+    private NewsDataSource newsDataSource;
+
+    @Resource
     private DataSourceFactory dataSourceFactory;
 
     public SearchVO doSearch(SearchRequest searchRequest) {
@@ -58,9 +63,12 @@ public class SearchFacade {
             Page<BiliVideoVO> biliVideoVOPage = biliVideoDataSource.doSearch(searchText, current,
                     pageSize);
 
+            Page<NewsVO> newsVOPage = newsDataSource.doSearch(searchText, current, pageSize);
+
             searchVO.setArticleVOList(articleVOPage.getRecords());
             searchVO.setPictureVOList(pictureVOPage.getRecords());
             searchVO.setBiliVideoVOList(biliVideoVOPage.getRecords());
+            searchVO.setNewsVOList(newsVOPage.getRecords());
         } else {
             DataSource<?> dataSource = dataSourceFactory.getDataSource(searchType);
             Page<?> dataPage = dataSource.doSearch(searchText, current, pageSize);
