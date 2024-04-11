@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
+ * 新闻 VO
+ *
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
