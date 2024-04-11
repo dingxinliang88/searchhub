@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youyi.searchhub.model.entity.News;
 import com.youyi.searchhub.model.enums.SearchType;
 import com.youyi.searchhub.model.vo.NewsVO;
+import com.youyi.searchhub.util.RetryUtil;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,51 +38,57 @@ public class NewsDataSource implements DataSource<NewsVO> {
 
     @Override
     public Page<NewsVO> doSearch(String searchText, long current, long pageSize) {
-        long total;
-        List<NewsVO> newsVOList = new ArrayList<>();
-        try (HttpResponse httpResponse = HttpRequest.get(FETCH_NEWS_URL)
+        String originRes;
+        try (HttpResponse httpResponse = RetryUtil.retry(() -> HttpRequest.get(FETCH_NEWS_URL)
                 .header(Header.USER_AGENT, USER_AGENT)
                 .header(Header.REFERER, REFERER)
-                .execute()) {
-            String originRes = httpResponse.body();
-            Matcher matcher = CONTENT_PATTERN.matcher(originRes);
-            if (!matcher.find()) {
-                throw new RuntimeException("获取新闻数据失败");
-            }
-
-            String contentJson = matcher.group(1); // 内容 JSON
-            Map<String, Object> contentMap = JSONUtil.toBean(contentJson, new TypeReference<>() {
-            }, true);
-
-            JSONObject data = (JSONObject) contentMap.get("data");
-
-            total = data.getLong("total");
-            JSONArray dataList = data.getJSONArray("list");
-
-            for (Object o : dataList) {
-                JSONObject item = (JSONObject) o;
-                String title = item.getStr("title");
-                String url = item.getStr("url");
-                String brief = item.getStr("brief");
-                String keywords = item.getStr("keywords");
-                String image = item.getStr("image");
-                LocalDateTime focusDate = item.getLocalDateTime("focus_date", LocalDateTime.now());
-                News news = new News(title, url, brief, keywords, image, focusDate);
-                newsVOList.add(news.toVO());
-
-                if (newsVOList.size() >= pageSize) {
-                    break;
-                }
-            }
+                .execute(), 5)) {
+            originRes = httpResponse.body();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        Page<NewsVO> newsVOPage = new Page<>(current, pageSize, total);
-        newsVOPage.setRecords(newsVOList);
-        return newsVOPage;
+        return getNewsVOPage(originRes, current, pageSize);
     }
 
     @Override
     public String getType() {
         return SearchType.NEWS.getType();
     }
+
+    private Page<NewsVO> getNewsVOPage(String originRes, long current, long pageSize) {
+        List<NewsVO> newsVOList = new ArrayList<>();
+        Matcher matcher = CONTENT_PATTERN.matcher(originRes);
+        if (!matcher.find()) {
+            throw new RuntimeException("获取新闻数据失败");
+        }
+
+        String contentJson = matcher.group(1); // 内容 JSON
+        Map<String, Object> contentMap = JSONUtil.toBean(contentJson, new TypeReference<>() {
+        }, true);
+
+        JSONObject data = (JSONObject) contentMap.get("data");
+
+        long total = data.getLong("total");
+        JSONArray dataList = data.getJSONArray("list");
+
+        for (Object o : dataList) {
+            JSONObject item = (JSONObject) o;
+            String title = item.getStr("title");
+            String url = item.getStr("url");
+            String brief = item.getStr("brief");
+            String keywords = item.getStr("keywords");
+            String image = item.getStr("image");
+            LocalDateTime focusDate = item.getLocalDateTime("focus_date", LocalDateTime.now());
+            News news = new News(title, url, brief, keywords, image, focusDate);
+            newsVOList.add(news.toVO());
+
+            if (newsVOList.size() >= pageSize) {
+                break;
+            }
+        }
+        Page<NewsVO> newsVOPage = new Page<>(current, pageSize, total);
+        newsVOPage.setRecords(newsVOList);
+        return newsVOPage;
+    }
+
 }

@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youyi.searchhub.model.entity.BiliVideo;
 import com.youyi.searchhub.model.enums.SearchType;
 import com.youyi.searchhub.model.vo.BiliVideoVO;
+import com.youyi.searchhub.util.RetryUtil;
 import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,38 +37,46 @@ public class BiliVideoDataSource implements DataSource<BiliVideoVO> {
 
     @Override
     public Page<BiliVideoVO> doSearch(String searchText, long current, long pageSize) {
-        List<BiliVideoVO> biliVideoVOList = new ArrayList<>();
-        try (HttpResponse httpResponse = HttpRequest.get(
+        String body;
+        try (HttpResponse response = RetryUtil.retry(() -> HttpRequest.get(
                         String.format(FETCH_BILI_VIDEO_URL, searchText))
                 .cookie(getBiliCookie())
-                .execute()) {
-            String body = httpResponse.body();
-            Map<String, Object> bodyMap = JSONUtil.toBean(body, new TypeReference<>() {
-            }, true);
-            Optional<JSONObject> optionalData = Optional.ofNullable(
-                    (JSONObject) bodyMap.get("data"));
-            optionalData.ifPresent(data -> {
-                JSONArray result = data.getJSONArray("result");
-                for (Object res : result) {
-                    JSONObject jsonObject = (JSONObject) res;
-
-                    BiliVideo biliVideo = new BiliVideo();
-                    biliVideo.setTitle(jsonObject.getStr("title"));
-                    biliVideo.setDescription(jsonObject.getStr("description"));
-                    biliVideo.setPic("https:" + jsonObject.getStr("pic"));
-                    biliVideo.setVideoUrl(jsonObject.getStr("arcurl"));
-                    biliVideoVOList.add(biliVideo.toVO());
-                }
-            });
+                .execute(), 5)) {
+            body = response.body();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        Page<BiliVideoVO> biliVideoVOPage = new Page<>(BILI_VIDEO_CURRENT, BILI_VIDEO_PAGE_SIZE);
-        biliVideoVOPage.setRecords(biliVideoVOList);
-        return biliVideoVOPage;
+        return getBiliVideoPage(body);
     }
 
     @Override
     public String getType() {
         return SearchType.BILI_VIDEO.getType();
+    }
+
+
+    private Page<BiliVideoVO> getBiliVideoPage(String body) {
+        List<BiliVideoVO> biliVideoVOList = new ArrayList<>();
+        Map<String, Object> bodyMap = JSONUtil.toBean(body, new TypeReference<>() {
+        }, true);
+        Optional<JSONObject> optionalData = Optional.ofNullable(
+                (JSONObject) bodyMap.get("data"));
+        optionalData.ifPresent(data -> {
+            JSONArray result = data.getJSONArray("result");
+            for (Object res : result) {
+                JSONObject jsonObject = (JSONObject) res;
+
+                BiliVideo biliVideo = new BiliVideo();
+                biliVideo.setTitle(jsonObject.getStr("title"));
+                biliVideo.setDescription(jsonObject.getStr("description"));
+                biliVideo.setPic("https:" + jsonObject.getStr("pic"));
+                biliVideo.setVideoUrl(jsonObject.getStr("arcurl"));
+                biliVideoVOList.add(biliVideo.toVO());
+            }
+        });
+        Page<BiliVideoVO> biliVideoVOPage = new Page<>(BILI_VIDEO_CURRENT, BILI_VIDEO_PAGE_SIZE);
+        biliVideoVOPage.setRecords(biliVideoVOList);
+        return biliVideoVOPage;
     }
 
     private HttpCookie getBiliCookie() {
